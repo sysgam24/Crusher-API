@@ -1,113 +1,99 @@
-# Crusher API Documentation
+# Documentación de la API de Crusher
 
-## Descripción General
-La **Crusher API** permite obtener información sobre el stock de productos de Crusher. Está diseñada para facilitar el acceso a los datos sobre productos, disponibilidad y precios.
+Esta es la API de Crusher para obtener información sobre el stock de productos y procesar órdenes.
 
-- **Versión:** 1.0.0
-- **Servidor de Producción:** [https://api.farmapara.es](https://api.farmapara.es)
+## Base URL
 
----
+La URL base para acceder a la API es:
+https://api.farmapara.es
+## Autenticación
 
+La API utiliza un token de autenticación Bearer. Asegúrate de incluir el token en el encabezado `Authorization` de cada solicitud.
+
+Ejemplo de encabezado:
+Authorization: Bearer tu_token_aqui
 ## Endpoints
 
-### 1. Obtener Stock de Crusher
+### 1. Obtener stock de Crusher
 
-#### **GET /stock/crusher_stock**
+**Método:** `GET`
 
-Este endpoint devuelve la información del stock de Crusher según los filtros aplicados.
+**Endpoint:** `/stock/crusher_stock`
 
-##### **Parámetros de consulta (Query Parameters):**
-- `active` (boolean, opcional): Filtra productos activos.
-  - Ejemplo: `?active=true`
-- `last_updated_at` (string, opcional): Fecha de la última actualización del stock.
-  - Formato: `date-time` (`YYYY-MM-DDTHH:MM:SS`).
-  - Ejemplo: `?last_updated_at=2024-08-09T10:15:02`
-- `page` (integer, opcional): Número de página para la paginación.
-  - Ejemplo: `?page=2`
-- `limit` (integer, opcional): Número de productos por página.
-  - Ejemplo: `?limit=30`
-- `all` (boolean, opcional): Incluye todos los productos, sin filtros.
-  - Ejemplo: `?all=true`
-- `product_id` (integer, opcional): ID de un producto específico.
-  - Ejemplo: `?product_id=150526`
+**Descripción:** Devuelve la información de stock para Crusher según los filtros aplicados.
 
-##### **Ejemplo de solicitud:**
-GET https://api.farmapara.es/stock/crusher_stock?active=true&limit=30
-##### **Respuestas:**
+#### Parámetros de Consulta
 
-- **200 OK**: Devuelve los detalles del stock.
-  - **Ejemplo de respuesta exitosa**:
-    ```json
-    {
-      "data": [
-        {
-          "product_id": "150526",
-          "ean": "1234567890123",
-          "name": "Producto A",
-          "brand_name": "Marca A",
-          "stock": "50",
-          "pvp": 12.99,
-          "price_tax_excl": "10.74",
-          "percentage_taxes": "21",
-          "box_size": 10,
-          "active": "true",
-          "last_updated_at": "2024-08-09T10:15:02"
-        }
-      ],
-      "pagination": {
-        "current_page": 1,
-        "total_pages": 5,
-        "total_items": 150
-      }
-    }
-    ```
+- **active** (boolean): Filtro para obtener solo productos activos.
+- **last_updated_at** (string, formato: date-time): Fecha de última actualización.
+- **page** (integer): Número de página para la paginación.
+- **limit** (integer): Número de productos por página.
+- **all** (boolean): Incluir todos los productos.
+- **product_id** (integer): ID del producto específico.
 
-- **400 Bad Request**: Parámetros inválidos en la solicitud.
-  - **Ejemplo de respuesta**:
-    ```json
-    {
-      "error": {
-        "code": 400,
-        "message": "Invalid parameters",
-        "details": "The parameter 'limit' must be a positive integer."
-      }
-    }
-    ```
+#### Respuestas
 
-- **404 Not Found**: No se encontraron productos que coincidan con los filtros.
-  - **Ejemplo de respuesta**:
-    ```json
-    {
-      "error": {
-        "code": 404,
-        "message": "No products found",
-        "details": "No products were found for the specified filters."
-      }
-    }
-    ```
-
+- **200 OK**: Respuesta exitosa, devuelve el stock de Crusher.
+- **400 Bad Request**: Solicitud incorrecta, parámetros inválidos.
+- **404 Not Found**: No se encontraron datos que coincidan con los filtros especificados.
 - **500 Internal Server Error**: Error interno del servidor.
-  - **Ejemplo de respuesta**:
-    ```json
+
+### 2. Procesar una orden de productos
+
+**Método:** `POST`
+
+**Endpoint:** `/stock/process_order`
+
+**Descripción:** Endpoint para procesar una orden de productos de Crusher.
+
+#### Cuerpo de la Solicitud
+
+```json
+{
+  "orders": [
     {
-      "error": {
-        "code": 500,
-        "message": "Internal server error",
-        "details": "An unexpected error occurred."
-      }
+      "order_id": "3fa85f64-5717-4562-b3fc-2c963f66prueba",
+      "external_order_id": "A17Z31JYF4",
+      "client_id": "178e39f1-d74d-40ef-b714-289fbbd81aac",
+      "lines": [
+        {
+          "product_id": "0155d7e6-aa2b-4888-b09e-9c93d541f1ff",
+          "quantity": 1
+        }
+      ]
     }
-    ```
+  ]
+}
+Respuestas
+200 OK: Orden procesada correctamente.
+422 Unprocessable Entity: Entidad no procesable, error en los datos.
+401 Unauthorized: Error de autenticación.
+500 Internal Server Error: Error interno del servidor.
+3. Obtener stockout
+Método: GET
 
----
+Endpoint: /stock/stockout
 
-## Cómo visualizar la documentación completa
-Para ver la especificación completa de la API en formato OpenAPI (YAML), sigue estos pasos:
+Descripción: Devuelve la información sobre los pedidos con stockout.
 
-1. Clona este repositorio.
-2. Abre el archivo `openapi.yaml` con una herramienta como [Swagger Editor](https://editor.swagger.io/) para una vista más detallada e interactiva de los endpoints.
-
----
-
-### Notas Adicionales:
-- Recuerda que el servidor de producción solo debe ser utilizado con credenciales adecuadas.
-- Los datos devueltos en la respuesta varían en función de los parámetros de consulta enviados en la solicitud.
+Parámetros de Consulta
+order_id (string, opcional): ID del pedido específico.
+Respuestas
+200 OK: Devuelve la información de los pedidos con stockout.
+204 No Content: No hay stockout disponible.
+Ejemplo de Uso
+Obtener stock de Crusher
+curl -X GET "https://api.farmapara.es/stock/crusher_stock?active=true" -H "Authorization: Bearer tu_token_aqui"
+curl -X POST "https://api.farmapara.es/stock/process_order" -H "Authorization: Bearer tu_token_aqui" -H "Content-Type: application/json" -d '{
+  "orders": [{
+    "order_id": "3fa85f64-5717-4562-b3fc-2c963f66prueba",
+    "external_order_id": "A17Z31JYF4",
+    "client_id": "178e39f1-d74d-40ef-b714-289fbbd81aac",
+    "lines": [{
+      "product_id": "0155d7e6-aa2b-4888-b09e-9c93d541f1ff",
+      "quantity": 1
+    }]
+  }]
+}'
+Obtener stockout
+curl -X GET "https://api.farmapara.es/stock/stockout" -H "Authorization: Bearer tu_token_aqui"
