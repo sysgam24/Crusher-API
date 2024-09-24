@@ -48,7 +48,7 @@ Authorization: Bearer tu_token_aqui
 
 #### Cuerpo de la Solicitud
 
-```json
+   ```json
 {
   "orders": [
     {
@@ -64,6 +64,7 @@ Authorization: Bearer tu_token_aqui
     }
   ]
 }
+    ```
 ---
 Respuestas
 200 OK: Orden procesada correctamente.
