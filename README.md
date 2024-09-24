@@ -1,13 +1,9 @@
 # Crusher API Documentation
 
-## Información General
-- **Título:** Crusher API
-- **Descripción:** API para obtener información sobre el stock de Crusher.
-- **Versión:** 1.0.0
-- **Servidor de producción:** [https://api.farmapara.es](https://api.farmapara.es)
+Este repositorio contiene la especificación OpenAPI de la API de Crusher.
 
-## Endpoints
+Puedes encontrar el archivo `openapi.yaml` en la raíz de este repositorio. Para visualizar la documentación de la API, sigue estos pasos:
 
-### GET `/stock/crusher_stock`
-
-...
+1. Descarga el archivo `openapi.yaml`.
+2. Usa una herramienta como [Swagger Editor](https://editor.swagger.io/) para ver la documentación.
+3. También puedes importar el archivo en **Postman** para probar los endpoints directamente.
