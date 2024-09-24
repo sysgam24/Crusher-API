@@ -37,6 +37,74 @@ Authorization: Bearer tu_token_aqui
 - **400 Bad Request**: Solicitud incorrecta, parámetros inválidos.
 - **404 Not Found**: No se encontraron datos que coincidan con los filtros especificados.
 - **500 Internal Server Error**: Error interno del servidor.
+##### **Ejemplo de solicitud:**
+GET https://api.farmapara.es/stock/crusher_stock?active=true&limit=30
+##### **Respuestas:**
+
+- **200 OK**: Devuelve los detalles del stock.
+  - **Ejemplo de respuesta exitosa**:
+    ```json
+    {
+      "data": [
+        {
+          "product_id": "150526",
+          "ean": "1234567890123",
+          "name": "Producto A",
+          "brand_name": "Marca A",
+          "stock": "50",
+          "pvp": 12.99,
+          "price_tax_excl": "10.74",
+          "percentage_taxes": "21",
+          "box_size": 10,
+          "active": "true",
+          "last_updated_at": "2024-08-09T10:15:02"
+        }
+      ],
+      "pagination": {
+        "current_page": 1,
+        "total_pages": 5,
+        "total_items": 150
+      }
+    }
+    ```
+
+- **400 Bad Request**: Parámetros inválidos en la solicitud.
+  - **Ejemplo de respuesta**:
+    ```json
+    {
+      "error": {
+        "code": 400,
+        "message": "Invalid parameters",
+        "details": "The parameter 'limit' must be a positive integer."
+      }
+    }
+    ```
+
+- **404 Not Found**: No se encontraron productos que coincidan con los filtros.
+  - **Ejemplo de respuesta**:
+    ```json
+    {
+      "error": {
+        "code": 404,
+        "message": "No products found",
+        "details": "No products were found for the specified filters."
+      }
+    }
+    ```
+
+- **500 Internal Server Error**: Error interno del servidor.
+  - **Ejemplo de respuesta**:
+    ```json
+    {
+      "error": {
+        "code": 500,
+        "message": "Internal server error",
+        "details": "An unexpected error occurred."
+      }
+    }
+    ```
+
+---
 
 ### 2. Procesar una orden de productos
 
