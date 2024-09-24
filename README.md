@@ -124,4 +124,103 @@ Este endpoint permite procesar una orden de productos de Crusher.
     }
   ]
 }
+```
+- **200 OK**:Orden procesada correctamente.
+##### **Ejemplo de solicitud:**
+POST https://api.farmapara.es/stock/process_order
+
+ **Ejemplo de respuesta exitosa**:
+ ```json
+ {
+  "message": "Order processed successfully."
+}
+```
+- **422 Unprocessable Entity**: Entidad no procesable, error en los datos.
+  - **Ejemplo de respuesta**:
 ```json
+    {
+  "error": {
+    "code": 422,
+    "message": "Unprocessable Entity",
+    "details": "The quantity must be a positive integer."
+  }
+}
+```
+- **401 Unauthorized**: Error de autenticación.
+  - **Ejemplo de respuesta**:
+```json
+    {
+  "error": {
+    "code": 401,
+    "message": "Unauthorized",
+    "details": "Invalid or missing authorization token."
+  }
+}
+```
+- **500 Internal Server Error**: Error interno del servidor.
+  - **Ejemplo de respuesta**:
+```json
+    {
+  "error": {
+    "code": 500,
+    "message": "Internal server error",
+    "details": "An unexpected error occurred."
+  }
+}
+```
+### 3. Obtener Stockout
+
+#### **GET /stock/stockout**
+
+Este endpoint devuelve la información sobre los pedidos con stockout.
+
+##### **Parámetros de consulta (Query Parameters):**
+- `order_id` (string, opcional):  ID del pedido específico.
+  - Ejemplo: `?order_id=3fa85f64-5717-4562-b3fc-2c963f66prueba`
+
+##### **Ejemplo de solicitud:**
+GET https://api.farmapara.es/stock/stockout
+
+- **200 OK**: Devuelve la información de los pedidos con stockout.
+ **Ejemplo de respuesta exitosa**:
+ ```json
+ {
+  "ordersStockOut": [
+    {
+      "order_id": "3fa85f64-5717-4562-b3fc-2c963f66prueba",
+      "external_order_id": "A17Z31JYF4",
+      "client_id": "178e39f1-d74d-40ef-b714-289fbbd81aac",
+      "order_date": "2024-08-09T10:15:02",
+      "lines": [
+        {
+          "product_id": "0155d7e6-aa2b-4888-b09e-9c93d541f1ff",
+          "quantity": 1,
+          "stockout": 10
+        }
+      ]
+    }
+  ]
+}
+```
+- **204 No Content**: No hay stockout disponible
+  - **Ejemplo de respuesta**:
+```json
+    {
+  "message": "No stockout available."
+}
+```
+---
+
+## Cómo visualizar la documentación completa
+Para ver la especificación completa de la API en formato OpenAPI (YAML), sigue estos pasos:
+
+1. Clona este repositorio.
+2. Abre el archivo `openapi.yaml` con una herramienta como [Swagger Editor](https://editor.swagger.io/) para una vista más detallada e interactiva de los endpoints.
+
+---
+
+### Notas Adicionales:
+- Recuerda que el servidor de producción solo debe ser utilizado con credenciales adecuadas.
+- Los datos devueltos en la respuesta varían en función de los parámetros de consulta enviados en la solicitud.
+- Asegúrate de incluir el token de autenticación en los encabezados de cada solicitud.
+- La API está diseñada para manejar errores de manera clara, proporcionando detalles en las respuestas.
