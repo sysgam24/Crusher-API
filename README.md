@@ -1,7 +1,7 @@
 # Crusher API Documentation
 
 ## Descripción General
-La **Crusher API** permite obtener información sobre el stock de productos de Crusher. Está diseñada para facilitar el acceso a los datos sobre productos, disponibilidad y precios.
+La **Crusher API** permite obtener información sobre el stock de productos de Crusher. Como tambien enviar y procesar ordenes. Está diseñada para facilitar el acceso a los datos sobre productos, disponibilidad y precios.
 
 - **Versión:** 1.0.0
 - **Servidor de Producción:** [https://api.farmapara.es](https://api.farmapara.es)
