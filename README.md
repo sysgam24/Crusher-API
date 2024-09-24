@@ -124,8 +124,4 @@ Este endpoint permite procesar una orden de productos de Crusher.
     }
   ]
 }
-
-Ejemplo de solicitud:
-POST https://api.farmapara.es/stock/process_order
-
-Respuestas:
+```json
