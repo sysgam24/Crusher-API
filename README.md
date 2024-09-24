@@ -1,44 +1,39 @@
-# Documentación de la API de Crusher
+# Crusher API Documentation
 
-Esta es la API de Crusher para obtener información sobre el stock de productos y procesar órdenes.
+## Descripción General
+La **Crusher API** permite obtener información sobre el stock de productos de Crusher. Está diseñada para facilitar el acceso a los datos sobre productos, disponibilidad y precios.
 
-## Base URL
+- **Versión:** 1.0.0
+- **Servidor de Producción:** [https://api.farmapara.es](https://api.farmapara.es)
 
-La URL base para acceder a la API es:
-https://api.farmapara.es
-## Autenticación
+---
 
-La API utiliza un token de autenticación Bearer. Asegúrate de incluir el token en el encabezado `Authorization` de cada solicitud.
-
-Ejemplo de encabezado:
-Authorization: Bearer tu_token_aqui
 ## Endpoints
 
-### 1. Obtener stock de Crusher
+### 1. Obtener Stock de Crusher
 
-**Método:** `GET`
+#### **GET /stock/crusher_stock**
 
-**Endpoint:** `/stock/crusher_stock`
+Este endpoint devuelve la información del stock de Crusher según los filtros aplicados.
 
-**Descripción:** Devuelve la información de stock para Crusher según los filtros aplicados.
+##### **Parámetros de consulta (Query Parameters):**
+- `active` (boolean, opcional): Filtra productos activos.
+  - Ejemplo: `?active=true`
+- `last_updated_at` (string, opcional): Fecha de la última actualización del stock.
+  - Formato: `date-time` (`YYYY-MM-DDTHH:MM:SS`).
+  - Ejemplo: `?last_updated_at=2024-08-09T10:15:02`
+- `page` (integer, opcional): Número de página para la paginación.
+  - Ejemplo: `?page=2`
+- `limit` (integer, opcional): Número de productos por página.
+  - Ejemplo: `?limit=30`
+- `all` (boolean, opcional): Incluye todos los productos, sin filtros.
+  - Ejemplo: `?all=true`
+- `product_id` (integer, opcional): ID de un producto específico.
+  - Ejemplo: `?product_id=150526`
 
-#### Parámetros de Consulta
-
-- **active** (boolean): Filtro para obtener solo productos activos.
-- **last_updated_at** (string, formato: date-time): Fecha de última actualización.
-- **page** (integer): Número de página para la paginación.
-- **limit** (integer): Número de productos por página.
-- **all** (boolean): Incluir todos los productos.
-- **product_id** (integer): ID del producto específico.
-
-#### Respuestas
-
-- **200 OK**: Respuesta exitosa, devuelve el stock de Crusher.
-- **400 Bad Request**: Solicitud incorrecta, parámetros inválidos.
-- **404 Not Found**: No se encontraron datos que coincidan con los filtros especificados.
-- **500 Internal Server Error**: Error interno del servidor.
 ##### **Ejemplo de solicitud:**
 GET https://api.farmapara.es/stock/crusher_stock?active=true&limit=30
+
 ##### **Respuestas:**
 
 - **200 OK**: Devuelve los detalles del stock.
@@ -106,17 +101,14 @@ GET https://api.farmapara.es/stock/crusher_stock?active=true&limit=30
 
 ---
 
-### 2. Procesar una orden de productos
+### 2. Procesar una Orden de Productos
 
-**Método:** `POST`
+#### **POST /stock/process_order**
 
-**Endpoint:** `/stock/process_order`
+Este endpoint permite procesar una orden de productos de Crusher.
 
-**Descripción:** Endpoint para procesar una orden de productos de Crusher.
-
-#### Cuerpo de la Solicitud
-
-   ```json
+##### **Cuerpo de la Solicitud (Request Body):**
+```json
 {
   "orders": [
     {
@@ -132,5 +124,3 @@ GET https://api.farmapara.es/stock/crusher_stock?active=true&limit=30
     }
   ]
 }
-
-
