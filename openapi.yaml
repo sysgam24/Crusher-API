@@ -1,0 +1,155 @@
+openapi: 3.0.0
+info:
+  title: Crusher API
+  description: API para obtener información sobre el stock de Crusher.
+  version: 1.0.0
+servers:
+  - url: https://api.farmapara.es
+    description: Servidor de producción
+
+paths:
+  /stock/crusher_stock:
+    get:
+      summary: Obtener stock de Crusher
+      description: Devuelve la información de stock para Crusher según los filtros aplicados.
+      parameters:
+        - name: active
+          in: query
+          description: Filtro para obtener solo productos activos
+          required: false
+          schema:
+            type: boolean
+        - name: last_updated_at
+          in: query
+          description: Fecha ultima actualización
+          required: false
+          schema:
+            type: string
+            format: date-time
+            example: '2024-08-09T10:15:02'
+        - name: page
+          in: query
+          description: Número de página para la paginación
+          required: false
+          schema:
+            type: integer
+            example: 2
+        - name: limit
+          in: query
+          description: Número de productos por página
+          required: false
+          schema:
+            type: integer
+            example: 30
+        - name: all
+          in: query
+          description: Incluir todos los productos
+          required: false
+          schema:
+            type: boolean
+            example: true
+        - name: product_id
+          in: query
+          description: ID del producto específico
+          required: false
+          schema:
+            type: integer
+            example: 150526
+      responses:
+        '200':
+          description: Respuesta exitosa, devuelve el stock de Crusher
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                        ean:
+                          type: string
+                        name:
+                          type: string
+                        brand_name:
+                          type: string
+                        stock:
+                          type: string
+                        pvp:
+                          type: number
+                          format: float
+                        price_tax_excl:
+                          type: string
+                        percentage_taxes:
+                          type: string
+                        box_size:
+                          type: integer
+                        active:
+                          type: string
+                        last_updated_at:
+                          type: string
+                          format: date-time
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      total_pages:
+                        type: integer
+                      total_items:
+                        type: integer
+        '400':
+          description: Solicitud incorrecta, parámetros inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                      message:
+                        type: string
+                      details:
+                        type: string
+        '404':
+          description: No se encontraron datos que coincidan con los filtros especificados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                      message:
+                        type: string
+                      details:
+                        type: string
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                      message:
+                        type: string
+                      details:
+                        type: string
