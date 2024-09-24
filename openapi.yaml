@@ -12,6 +12,8 @@ paths:
     get:
       summary: Obtener stock de Crusher
       description: Devuelve la información de stock para Crusher según los filtros aplicados.
+      security:
+        - bearerAuth: []  # Agregando la seguridad para este endpoint
       parameters:
         - name: active
           in: query
@@ -21,7 +23,7 @@ paths:
             type: boolean
         - name: last_updated_at
           in: query
-          description: Fecha ultima actualización
+          description: Fecha última actualización
           required: false
           schema:
             type: string
@@ -153,3 +155,194 @@ paths:
                         type: string
                       details:
                         type: string
+
+  /stock/process_order:
+    post:
+      summary: Procesar una orden de productos
+      description: Endpoint para procesar una orden de productos de Crusher.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orders:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      order_id:
+                        type: string
+                        example: "3fa85f64-5717-4562-b3fc-2c963f66prueba"
+                      external_order_id:
+                        type: string
+                        example: "A17Z31JYF4"
+                      client_id:
+                        type: string
+                        example: "178e39f1-d74d-40ef-b714-289fbbd81aac"
+                      lines:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            product_id:
+                              type: string
+                              example: "0155d7e6-aa2b-4888-b09e-9c93d541f1ff"
+                            quantity:
+                              type: integer
+                              example: 1
+      responses:
+        '200':
+          description: Orden procesada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+        '422':
+          description: Entidad no procesable, error en los datos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ERROR"
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: "Datos incompletos o incorrectos para una orden."
+        '401':
+          description: Error de autenticación
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Token no válido"
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Error inesperado en el servidor."
+
+  /stock/stockout:
+    get:
+      summary: Obtener productos en stockout
+      description: Devuelve la información sobre los productos que han salido de stock.
+      security:
+        - bearerAuth: []  # Agregando la seguridad para este endpoint
+      parameters:
+        - name: order_id
+          in: query
+          description: ID de la orden específica
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Respuesta exitosa, devuelve los productos en stockout
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ordersStockOut:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_id:
+                          type: string
+                        external_order_id:
+                          type: string
+                        client_id:
+                          type: string
+                        order_date:
+                          type: string
+                          format: date-time
+                        lines:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              product_id:
+                                type: string
+                              quantity:
+                                type: integer
+                              stockout:
+                                type: integer
+        '400':
+          description: Solicitud incorrecta, parámetros inválidos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                      message:
+                        type: string
+                      details:
+                        type: string
+        '404':
+          description: No se encontraron datos que coincidan con los filtros especificados
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                      message:
+                        type: string
+                      details:
+                        type: string
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                      message:
+                        type: string
+                      details:
+                        type: string
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
