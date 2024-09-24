@@ -64,7 +64,6 @@ Authorization: Bearer tu_token_aqui
     }
   ]
 }
-    ```
 ---
 Respuestas
 200 OK: Orden procesada correctamente.
