@@ -6,14 +6,15 @@ info:
 servers:
   - url: https://api.farmapara.es
     description: Servidor de producción
-
 paths:
   /stock/crusher_stock:
     get:
       summary: Obtener stock de Crusher
-      description: Devuelve la información de stock para Crusher según los filtros aplicados.
+      description: >-
+        Devuelve la información de stock para Crusher según los filtros
+        aplicados.
       security:
-        - bearerAuth: []  # Agregando la seguridad para este endpoint
+        - bearerAuth: []
       parameters:
         - name: active
           in: query
@@ -155,7 +156,6 @@ paths:
                         type: string
                       details:
                         type: string
-
   /stock/process_order:
     post:
       summary: Procesar una orden de productos
@@ -176,13 +176,13 @@ paths:
                     properties:
                       order_id:
                         type: string
-                        example: "3fa85f64-5717-4562-b3fc-2c963f66prueba"
+                        example: 3fa85f64-5717-4562-b3fc-2c963f66prueba
                       external_order_id:
                         type: string
-                        example: "A17Z31JYF4"
+                        example: A17Z31JYF4
                       client_id:
                         type: string
-                        example: "178e39f1-d74d-40ef-b714-289fbbd81aac"
+                        example: 178e39f1-d74d-40ef-b714-289fbbd81aac
                       lines:
                         type: array
                         items:
@@ -190,7 +190,7 @@ paths:
                           properties:
                             product_id:
                               type: string
-                              example: "0155d7e6-aa2b-4888-b09e-9c93d541f1ff"
+                              example: 0155d7e6-aa2b-4888-b09e-9c93d541f1ff
                             quantity:
                               type: integer
                               example: 1
@@ -204,22 +204,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "OK"
-        '422':
-          description: Entidad no procesable, error en los datos
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: "ERROR"
-                  errors:
-                    type: array
-                    items:
-                      type: string
-                      example: "Datos incompletos o incorrectos para una orden."
+                    example: OK
         '401':
           description: Error de autenticación
           content:
@@ -229,7 +214,22 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "Token no válido"
+                    example: Token no válido
+        '422':
+          description: Entidad no procesable, error en los datos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ERROR
+                  errors:
+                    type: array
+                    items:
+                      type: string
+                      example: Datos incompletos o incorrectos para una orden.
         '500':
           description: Error interno del servidor
           content:
@@ -239,14 +239,13 @@ paths:
                 properties:
                   error:
                     type: string
-                    example: "Error inesperado en el servidor."
-
+                    example: Error inesperado en el servidor.
   /stock/stockout:
     get:
       summary: Obtener productos en stockout
       description: Devuelve la información sobre los productos que han salido de stock.
       security:
-        - bearerAuth: []  # Agregando la seguridad para este endpoint
+        - bearerAuth: []
       parameters:
         - name: order_id
           in: query
@@ -339,7 +338,121 @@ paths:
                         type: string
                       details:
                         type: string
-
+  /stock/details:
+    get:
+      summary: Obtener Detalles e Imagen
+      description: >-
+        Devuelve detalles sobre el producto, incluida la imagen en caso de
+        tener.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: product_id
+          in: query
+          description: ID del producto
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Respuesta exitosa, devuelve la información del producto
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      product_id:
+                        type: string
+                        description: UUID del producto
+                      name:
+                        type: string
+                        description: Nombre del producto
+                      image:
+                        type: string
+                        description: Imagen del producto en formato base64
+                      description:
+                        type: string
+                        description: Descripción corta del producto
+                      long_description:
+                        type: string
+                        description: Descripción larga del producto
+                  error:
+                    type: object
+                    nullable: true
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+        '400':
+          description: Solicitud inválida, el código no fue proporcionado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+        '401':
+          description: No autorizado, token de autenticación faltante o inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+        '403':
+          description: Prohibido, el token no es válido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+        '404':
+          description: Código inválido
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
 components:
   securitySchemes:
     bearerAuth:
