@@ -209,6 +209,59 @@ GET https://api.farmapara.es/stock/stockout
   "message": "No stockout available."
 }
 ```
+
+### 3. Obtener Detalles e imagen
+
+#### **GET /stock/details**
+
+Este endpoint permite obtener los detalles de un producto específico a través del `product_id`. Retorna el nombre, las descripciones (corta y larga) y una imagen optimizada del producto.
+
+##### **Parámetros de consulta (Query Parameters):**
+- **product_id** (requerido): El ID del producto cuyo detalle se desea obtener. Este debe ser un código válido en el sistema.
+
+##### **Ejemplo de solicitud:**
+GET https://api.farmapara.es/stock/details?product_id=12345
+
+- **200 OK**: La respuesta se devolverá en formato JSON y contendrá la siguiente estructura:
+ **Ejemplo de respuesta exitosa**:
+ ```json
+ {
+    "data": {
+        "product_id": "123456",
+        "name": "Nombre del Producto",
+        "image": "base64_encoded_image_string",
+        "description": "Descripción corta del producto.",
+        "long_description": "Descripción larga del producto, con secciones como Función, Ingredientes, etc."
+    },
+    "error": null
+}
+```
+
+  - **Ejemplo de Respuesta de Error**:
+```json
+    {
+    "error": {
+        "code": "001",
+        "message": "Código inválido"
+    }
+}
+
+{
+    "error": {
+        "code": "002",
+        "message": "Mensaje de error específico"
+    }
+}
+
+{
+    "error": {
+        "code": "003",
+        "message": "Código no proporcionado"
+    }
+}
+
+```
+
 ---
 
 ## Cómo visualizar la documentación completa
